@@ -48,6 +48,7 @@ class ShoppingList(models.Model):
         on_delete=models.CASCADE,
         related_name='shoppinglist_product_id'
     )
+    quantity = models.IntegerField()
     total_cost = models.IntegerField()
     user = models.ForeignKey(
         User,
