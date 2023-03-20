@@ -27,7 +27,7 @@ class Product(models.Model):
 class Collection(models.Model):
     name = models.CharField(unique=True, max_length=200,
                             null=False, blank=False)
-    product_id = models.ForeignKey(
+    product_id = models.ManyToManyField(
         Product,
         on_delete=models.CASCADE,
         related_name='collection_product_id'
@@ -48,7 +48,6 @@ class ShoppingList(models.Model):
         on_delete=models.CASCADE,
         related_name='shoppinglist_product_id'
     )
-    quantity = models.IntegerField()
     total_cost = models.IntegerField()
     user = models.ForeignKey(
         User,
