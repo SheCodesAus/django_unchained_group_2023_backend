@@ -10,16 +10,51 @@ from .serializers import ProductSerializer, CollectionSerializer, ShoppingListSe
 
 # Create your views here, expand them
 
-# class ProductList(generics.ListCreateAPIView):
-    # 
-    # 
-# 
-# class ProductDetails(generics.RetrieveUpdateDestroyAPIView):
-    # 
-    # 
-    # 
-# class CollectionList(generics.RetrieveUpdateDestroyAPIView):
-    # 
-    # 
-    # 
-# class ShoppingList(generics.ListCreateAPIView):
+class CollectionList(generics.ListAPIView):
+    def get(self, request, pk):
+        collection = self.objects.all()
+        serializer = CollectionSerializer(collection)
+        return Response(serializer.data)
+
+
+class CollectionDetail(generics.RetrieveUpdateDestroyAPIView):
+    def get_object(self, pk):
+        try:
+            collection = Collection.objects.get(pk=pk)
+            self.check_object_permissions(self.request, collection)
+            return collection
+        except Collection.DoesNotExist:
+            raise Http404
+        
+    def get(self, request, pk):
+        collection = self.get_object(pk=pk)
+        serializer = CollectionSerializer(collection)
+        return Response(serializer.data)
+
+
+
+# class ProductList(generics.ListAPIView):
+
+#     def get_object(self, pk):
+#         try:
+#             product = Product.objects.get(pk=pk)
+#             self.check_object_permissions(self.request, product)
+#             return product
+#         except Product.DoesNotExist:
+#             raise Http404
+
+#     def get(self, request, pk):
+#         product = self.get_object(pk)
+#         serializer = ProductSerializer(product)
+#         return Response(serializer.data)
+    
+    
+
+class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class ShoppingList(generics.RetrieveUpdateAPIView):
+    queryset = ShoppingList.objects.all()
+    serializer_class = ShoppingListSerializer

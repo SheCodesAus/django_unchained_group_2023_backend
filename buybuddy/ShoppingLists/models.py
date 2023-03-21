@@ -27,7 +27,7 @@ class Product(models.Model):
 class Collection(models.Model):
     name = models.CharField(unique=True, max_length=200,
                             null=False, blank=False)
-    product_id = models.ManyToManyField(
+    product_id = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
         related_name='collection_product_id'
