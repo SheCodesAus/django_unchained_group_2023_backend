@@ -19,7 +19,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def create (self, validated_data):
         return Product.objects.create (**validated_data)
     
-    """ Ability to edit product either use def update or use RetrieveUpdateDestroyAPIView in view.py - is that correct?"""    
+    """ Ability to edit product use both def update and use RetrieveUpdateDestroyAPIView in view.py - is that correct? See notes from https://www.django-rest-framework.org/api-guide/serializers/"""    
    
    
 
