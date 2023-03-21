@@ -10,7 +10,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200, null=False, blank=False)
     image_url = models.URLField(blank=True, null=True)
     product_url = models.URLField(blank=True, null=True)
-    price = models.IntegerField(decimal_places=2, max_digits=10)
+    price = models.IntegerField()
     brand = models.CharField(max_length=100)
     notes = models.TextField(max_length=500)
     add_to_shoppinglist = models.BooleanField()
