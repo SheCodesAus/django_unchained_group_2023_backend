@@ -1,73 +1,40 @@
-from django.shortcuts import render
-from rest_framework import parsers, renderers
-from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-from rest_framework.compat import coreapi, coreschema
-from rest_framework.response import Response
-from rest_framework.schemas import ManualSchema
-from rest_framework.schemas import coreapi as coreapi_schema
+from django.http import Http404
 from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, generics
+from .models import CustomUser
+from .serializers import CustomUserSerializer, ChangePasswordSerializer
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsLoggedIn
 
-
-class ObtainAuthToken(APIView):
-    throttle_classes = ()
-    permission_classes = ()
-    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
-    renderer_classes = (renderers.JSONRenderer,)
-    serializer_class = AuthTokenSerializer
-    if coreapi_schema.is_enabled():
-        schema = ManualSchema(
-            fields=[
-                coreapi.Field(
-                    name="username",
-                    required=True,
-                    location='form',
-                    schema=coreschema.String(
-                        title="Username",
-                        description="Valid username for authentication",
-                    ),
-                ),
-                coreapi.Field(
-                    name="password",
-                    required=True,
-                    location='form',
-                    schema=coreschema.String(
-                        title="Password",
-                        description="Valid password for authentication",
-                    ),
-                ),
-            ],
-            encoding="application/json",
-        )
-    def get_serializer_context(self):
-        return {
-            'request': self.request,
-            'format': self.format_kwarg,
-            'view': self
-        }
-    def get_serializer(self, *args, **kwargs):
-        kwargs['context'] = self.get_serializer_context()
-        return self.serializer_class(*args, **kwargs)
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key, 'user': token.user.id})
-obtain_auth_token = ObtainAuthToken.as_view()
-
-
-
-# Authenticated View to determine 
-
-class AuthenticatedUser(APIView):
-    def get_object(self):
+class CustomUserList(APIView):
+    
+    def get(self, request):
+        users = CustomUser.objects.all()
+        serializer = CustomUserSerializer(users, many=True)
+        return Response(serializer.data)
+        
+    def post(self, request):
+        serializer = CustomUserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+        
+class CustomUserDetail(APIView):
+    def get_object(self, pk):
         try:
-            return self.request.user
+            return CustomUser.objects.get(pk=pk)
         except CustomUser.DoesNotExist:
             raise Http404
-    def get(self, request):
-        print(request)
-        user = self.get_object()
+            
+    def get(self, request, pk):
+        user = self.get_object(pk)
         serializer = CustomUserSerializer(user)
-        return Response(serializer.data) 
+        return Response(serializer.data)
+
+class ChangePasswordView(generics.UpdateAPIView):
+
+    queryset = CustomUser.objects.all()
+    permission_classes = (IsAuthenticated, IsLoggedIn)
+    serializer_class = ChangePasswordSerializer

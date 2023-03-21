@@ -1,5 +1,5 @@
-from ShoppingLists.serializers import ProductSerializer, CollectionSerializer
 from rest_framework import serializers, validators
+
 from .models import CustomUser
 from django.contrib.auth.password_validation import validate_password
 
@@ -7,7 +7,7 @@ class CustomUserSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     username = serializers.CharField(max_length=150)
     email = serializers.EmailField()
-    
+
     def create(self, validated_data):
         return CustomUser.objects.create(**validated_data)
         user.set_password(validate_date['password'])
