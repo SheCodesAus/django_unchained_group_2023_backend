@@ -10,7 +10,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200, null=False, blank=False)
     image_url = models.URLField(blank=True, null=True)
     product_url = models.URLField(blank=True, null=True)
-    price = models.IntegerField(decimal_places=2, max_digits=10)
+    price = models.IntegerField()
     brand = models.CharField(max_length=100)
     notes = models.TextField(max_length=500)
     add_to_shoppinglist = models.BooleanField()
@@ -27,7 +27,7 @@ class Product(models.Model):
 class Collection(models.Model):
     name = models.CharField(unique=True, max_length=200,
                             null=False, blank=False)
-    product_id = models.ManyToManyField(
+    product_id = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
         related_name='collection_product_id'
