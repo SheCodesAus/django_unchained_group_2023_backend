@@ -1,6 +1,7 @@
 from rest_framework import serializers, validators
 
 from .models import CustomUser
+
 from django.contrib.auth.password_validation import validate_password
 
 class CustomUserSerializer(serializers.Serializer):
