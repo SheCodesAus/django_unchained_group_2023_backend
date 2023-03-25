@@ -41,7 +41,7 @@ class ProductDetailSerializer(ProductSerializer):
 class CollectionSerializer(serializers.ModelSerializer):
     """Many to many relationship: Collection and product_id"""
     # product_id = ProductSerializer(many=True, read_only=True, source='collection_product_id')
-    product_id = serializers.ReadOnlyField(many=True, read_only=True, source='collection_product_id')
+    # product_id = serializers.ReadOnlyField(many=True, read_only=True, source='collection_product_id')
     
     class Meta:
         model = Collection
