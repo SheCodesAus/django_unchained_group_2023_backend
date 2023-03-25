@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -74,6 +75,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'buybuddy.wsgi.application'
 
+# Authentication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+    	   'rest_framework.authentication.TokenAuthentication',
+    	   'rest_framework.authentication.SessionAuthentication',
+    ]
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
