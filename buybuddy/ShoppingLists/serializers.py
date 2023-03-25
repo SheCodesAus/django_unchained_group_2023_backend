@@ -38,14 +38,14 @@ class ProductDetailSerializer(ProductSerializer):
         return instance
    
 
-class CollectionSerializer(serializers.ModelSerializer):
+class CollectionSerializer(serializers.Serializer):
     """Many to many relationship: Collection and product_id"""
-    # product_id = ProductSerializer(many=True, read_only=True, source='collection_product_id')
+    product_id = ProductSerializer(many=True, read_only=True, source='collection_product_id')
     # product_id = serializers.ReadOnlyField(many=True, read_only=True, source='collection_product_id')
     
     class Meta:
         model = Collection
-        fields = ('id', 'name')
+        fields = ('name', 'user', 'product_id')
         read_only_fields = ('product_id', 'user_id')
         
     def create(self, validated_data):
