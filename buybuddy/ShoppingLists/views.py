@@ -11,8 +11,8 @@ from .serializers import ProductSerializer, CollectionSerializer, ShoppingListSe
 # Create your views here, expand them
 
 class CollectionList(generics.ListAPIView):
-    def get(self, request, pk):
-        collection = self.objects.all()
+    def get(self, request):
+        collection = Collection.objects.all()
         serializer = CollectionSerializer(collection)
         return Response(serializer.data)
 
