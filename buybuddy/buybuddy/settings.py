@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get('DJANGO_DEBUG') != 'False'
 #DEBUG=False
 
-ALLOWED_HOSTS = ['fragrant-dew-4130.fly.dev', '127.0.0.1']
+ALLOWED_HOSTS = ['fragrant-dew-4130.fly.dev', '127.0.0.1', 'localhost']
 CORS_ALLOW_ALL_ORIGINS = True
 CSRF_TRUSTED_ORIGINS = ['https://*.fly.dev']
 
@@ -39,7 +39,7 @@ CSRF_TRUSTED_ORIGINS = ['https://*.fly.dev']
 
 INSTALLED_APPS = [
     'ShoppingLists.apps.ShoppinglistConfig',
-    'products.apps.ProductsConfig',
+    # 'products.apps.ProductsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

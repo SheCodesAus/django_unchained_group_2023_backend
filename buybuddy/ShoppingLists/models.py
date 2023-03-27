@@ -1,54 +1,26 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-# from .models import Product - this caused circular import error.
-
-User = get_user_model()
 
 
-""" Collection Model """
+
 
 class Collection(models.Model):
+    collection_name = models.CharField(max_length=250)
 
-    # pass
-
-    name = models.CharField(unique=True, max_length=200,
-                            null=False, blank=False)
-    product = models.ManyToManyField(
-        to="products.Product",
-        related_name="product_item", blank=True
-    )
-    # user = models.ForeignKey(
-    #     User,
-    #     on_delete=models.CASCADE
-    # )
+    def __str__(self):
+        return self.collection_name
     
+class Product(models.Model):
+    product_brand = models.CharField(max_length=250)
+    product_name = models.CharField(max_length=250)
+    image_url = models.URLField()
+    product_url = models.URLField()
+    product_price = models.FloatField()
+    additional_notes = models.CharField(max_length=1000)
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name='product_collection')
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='user_product')
 
-
-
-
-""" Shopping List Model """
-
-
-class ShoppingList(models.Model):
-
-    # pass 
-
-    product = models.ForeignKey(
-        Collection,
-        on_delete=models.CASCADE,
-        related_name='favorite_item', null=True
-    )
-    total_cost = models.IntegerField()
-    # user = models.ForeignKey(
-    #     User,
-    #     on_delete=models.CASCADE
-    # )
-
-@property
-def final_cost(self):
-    total_cost_sum = self.total_costs.aggregate(
-        sum=models.Sum("total_cost"))["sum"]
-    if total_cost_sum == None:
-        return 0
-    else:
-        return total_cost_sum
+    def __str__(self):
+        return self.product_name
+    
+    
