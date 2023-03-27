@@ -1,8 +1,6 @@
 from django.db import models
 # from .models import User 
-# Collection
 
-# Create your models here.
 
 """ Product Model """
 
@@ -14,15 +12,18 @@ class Product(models.Model):
     price = models.IntegerField()
     brand = models.CharField(max_length=100)
     notes = models.TextField(max_length=500)
-    collection = models.CharField(blank=True, null=True, max_length=200)
-    user = models.ForeignKey(
-        to="users.CustomUser",
-        on_delete=models.CASCADE,
-    )
+    collection = models.ForeignKey(to="ShoppingLists.Collection", on_delete=models.CASCADE, blank=True, null=True, related_name="collection_item")
+    # user = models.ForeignKey(
+    #     to="users.CustomUser",
+    #     on_delete=models.CASCADE,
+    # )
 
-    # class Meta:
-    #     abstract = True
 
+
+
+
+
+    
 
     # add_to_list = (models.BooleanFiled) cannot be a field on the product model because we are wanting the user to assign the product to a collection upon initial input of that product into the app. 
 

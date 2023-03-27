@@ -13,13 +13,26 @@ from .serializers import ProductSerializer
 
 # Create your views here.
 
-""" Product Detail View """
-""" There is no product list view because THESE ARE the COLLECTION DETAIL VIEWS! It's likely we don't even need this particular view and just require the serializer for the product, however including just incase."""
+""" Product List View """
 
+class ProductList(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    # filter_backends = [filters.SearchFilter]
+    # filterset_fields = ("price", "brand", "name",)
+
+
+""" Product Detail View"""
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [filters.SearchFilter]
-    filterset_fields = ("price", "brand", "name",)
+    # filter_backends = [filters.SearchFilter]
+    # filterset_fields = ("price", "brand", "name",)
 
+    def handle_exception(self, exc):
+        if isinstance(exc, Http404):
+            return Response(
+                {"data": "The product you are looking for does not exist."}, status=status.HTTP_404_NOT_FOUND
+            )
+        return super(ProductDetail, self).handle_exception(exc)
     

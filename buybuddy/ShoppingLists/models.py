@@ -15,12 +15,12 @@ class Collection(models.Model):
                             null=False, blank=False)
     product = models.ManyToManyField(
         to="products.Product",
-        related_name="product_item", null=True
+        related_name="product_item", blank=True
     )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
+    # user = models.ForeignKey(
+    #     User,
+    #     on_delete=models.CASCADE
+    # )
     
 
 
@@ -36,13 +36,13 @@ class ShoppingList(models.Model):
     product = models.ForeignKey(
         Collection,
         on_delete=models.CASCADE,
-        related_name='collection_item', null=True
+        related_name='favorite_item', null=True
     )
     total_cost = models.IntegerField()
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
+    # user = models.ForeignKey(
+    #     User,
+    #     on_delete=models.CASCADE
+    # )
 
 @property
 def final_cost(self):

@@ -1,12 +1,18 @@
 from rest_framework import serializers
 from .models import Product
+from ShoppingLists.models import Collection
+# from ShoppingLists.serializers import CollectionSerializer
 
 class ProductSerializer(serializers.ModelSerializer):
+    # collection = CollectionSerializer(many=True, required=False)
+    
+    # collection = serializers.SlugRelatedField(queryset=Collection.objects.all(), slug_field="name",
+    #     many=True)
 
     class Meta:
         model = Product   
-        fields = ['__all__']
-        read_only_fields = ['id', 'user']
+        fields = ['name', 'image_url', 'product_url', 'price', 'brand', 'notes', 'collection']
+        read_only_fields = ['id']
     
         def create(self, validated_data):
             return Product.objects.create(**validated_data)
