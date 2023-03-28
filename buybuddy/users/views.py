@@ -33,8 +33,14 @@ class CustomUserDetail(APIView):
         serializer = CustomUserSerializer(user)
         return Response(serializer.data)
 
-class ChangePasswordView(generics.UpdateAPIView):
-
-    queryset = CustomUser.objects.all()
-    permission_classes = (IsAuthenticated, IsLoggedIn)
-    serializer_class = ChangePasswordSerializer
+class AuthenticatedUser(APIView):
+    def get_object(self):
+        try:
+            return self.request.user
+        except CustomUser.DoesNotExist:
+            raise Http404
+        
+    def get(self, request):
+        user = self.get_object()
+        serializer = CustomUserSerializer(user)
+        return Response(serializer.data)

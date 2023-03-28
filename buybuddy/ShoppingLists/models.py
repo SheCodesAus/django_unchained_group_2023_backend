@@ -1,56 +1,26 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-User = get_user_model()
 
-""" Product Model """
-
-
-class Product(models.Model):
-    name = models.CharField(max_length=200, null=False, blank=False)
-    image_url = models.URLField(blank=True, null=True)
-    product_url = models.URLField(blank=True, null=True)
-    price = models.IntegerField()
-    brand = models.CharField(max_length=100)
-    notes = models.TextField(max_length=500)
-    add_to_shoppinglist = models.BooleanField()
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='user_product'
-    )
-
-
-""" Collection Model """
 
 
 class Collection(models.Model):
-    name = models.CharField(unique=True, max_length=200,
-                            null=False, blank=False)
-    product_id = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE,
-        related_name='collection_product_id'
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='user_collection'
-    )
+    collection_name = models.CharField(max_length=250)
 
+    def __str__(self):
+        return self.collection_name
+    
+class Product(models.Model):
+    product_brand = models.CharField(max_length=250)
+    product_name = models.CharField(max_length=250)
+    image_url = models.URLField()
+    product_url = models.URLField()
+    product_price = models.FloatField()
+    additional_notes = models.CharField(max_length=1000)
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name='product_collection')
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='user_product')
 
-""" Shopping List Model """
-
-
-class ShoppingList(models.Model):
-    product_id = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE,
-        related_name='shoppinglist_product_id'
-    )
-    total_cost = models.IntegerField()
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='user_shoppinglist'
-    )
+    def __str__(self):
+        return self.product_name
+    
+    

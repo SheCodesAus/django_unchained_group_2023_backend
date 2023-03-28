@@ -3,9 +3,11 @@ from . import views
 from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
-    path('collections/', views.CollectionList.as_view(), name='collections'),
-    path('collections/<int:pk>', views.CollectionDetail.as_view(), name='collection-detail'),
-    path('shopping-list/', views.ShoppingList.as_view(), name='shopping-list'),
+    path("collection-list/", views.CollectionListCreateView.as_view(), name='collection-list'),
+    path("collection-detail/<int:pk>/", views.CollectionDetailView.as_view(), name='collection-detail'),
+    path("product-list/", views.ProductListCreateView.as_view(), name='product-list'),
+    path("product-detail/<int:pk>/", views.ProductDetailView.as_view(), name='product-detail'),
+
 
 ]
 
