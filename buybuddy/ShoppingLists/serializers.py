@@ -27,7 +27,8 @@ class CollectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Collection
-        exclude = ['id']
+        fields = "__all__"
+        # exclude = ['id']
 
 
 
