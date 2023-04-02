@@ -46,6 +46,7 @@ class CollectionDetailView(APIView):
     #         return Response(serializer.data, status=status.HTTP_200_OK)
     #     else:
     #         return Response({'Message': 'No collection found'}, status=status.HTTP_404_NOT_FOUND)
+    
     def get(self, request, pk):
         single_collection = self.get_object(pk, request)
         serializers = CollectionSerializer(single_collection)
@@ -111,14 +112,12 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 # object permissions as opposed to model permissions? - Bridgitte
 
 # https://www.geeksforgeeks.org/customizing-object-level-permissions-django-rest-framework/
-# making a customised class?
+# making a customised class? - brigitte
 
 
 # Error message: Field 'id' expected a number but got <rest_framework.request.Request: GET '/collection-detail/1/'>.
 # This comes up when a user tries to view their own collection detail view.
 
-# Error message: 'Product' object has no attribute 'owner'
-# product needs an owner to post now?
 
 
 
