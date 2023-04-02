@@ -12,19 +12,28 @@ from .serializers import CollectionSerializer, ProductSerializer, ProductDetailS
 
 
 class CollectionListCreateView(generics.ListCreateAPIView):
-    queryset = Collection.objects.all()
+    # queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
-    
-    def list(self, request, *args, **kwargs):
-        # queryset = self.get_queryset()
-        queryset = Collection.objects.all().filter(owner=self.request.user)
 
-        serializer = CollectionSerializer(queryset, many=True, context={'request': request})
-        if queryset.exists():
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response({'Message': 'No collection found'}, status=status.HTTP_404_NOT_FOUND)
+    def get_queryset(self):
+        return Collection.objects.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+    
+
+
+    # def list(self, request, *args, **kwargs):
+    #     # queryset = self.get_queryset()
+    #     queryset = Collection.objects.all().filter(owner=self.request.user)
+
+    #     serializer = CollectionSerializer(queryset, many=True, context={'request': request})
+    #     if queryset.exists():
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     else:
+    #         return Response({'Message': 'No collection found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 class CollectionDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOwner]
@@ -35,7 +44,7 @@ class CollectionDetailView(APIView):
     #     owner = self.request.user
     #     return self.queryset.prefetch_related(('owner'), queryset=Collection.objects.filter(owner))
 
-    def get_object(self, request, pk):
+    def get_object(self, pk):
         try:
             collection = Collection.objects.get(pk=pk)
             self.check_object_permissions(self.request, collection)
@@ -57,9 +66,13 @@ class CollectionDetailView(APIView):
     #         return Response({'Message': 'No collection found'}, status=status.HTTP_404_NOT_FOUND)
     
     def get(self, request, pk):
-        single_collection = self.get_object(request, pk)
+        single_collection = self.get_object(pk)
         serializers = CollectionSerializer(single_collection)
         return Response(serializers.data)
+    
+
+    #  May restrict being able to choose another user to put a, but we want to remove the name from dropdown completely.
+    # https://stackoverflow.com/questions/25899534/django-rest-framework-restrict-posting-and-browsable-api-fields
     
     def put(self, request, pk):
         collection = self.get_object(pk)
@@ -82,50 +95,70 @@ class CollectionDetailView(APIView):
         
 
 class ProductListCreateView(generics.ListCreateAPIView):
-    queryset = Product.objects.filter()
+    # queryset = Product.objects.filter()
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
-  
+    
+    # So users cannot POST and PUT products into another users' collections.
+    # def get_serializer_context(self):
+    #     return {'request': self.request}
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = ProductSerializer(queryset, many=True, context={'request': request})
-        if queryset.exists():
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response({'Message':'No products found'}, status=status.HTTP_204_NO_CONTENT)
+    def get_queryset(self):
+        return Product.objects.filter(owner=self.request.user)
 
-    def create(self, request, *args, **kwargs):
-        serializer = ProductSerializer(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+
+
+
+
+
+
+
+        
+
+    # def list(self, request, *args, **kwargs):
+    #     queryset = self.get_queryset()
+    #     serializer = ProductSerializer(queryset, many=True, context={'request': request})
+    #     if queryset.exists():
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     else:
+    #         return Response({'Message':'No products found'}, status=status.HTTP_204_NO_CONTENT)
+
+    # def create(self, request, *args, **kwargs):
+    #     serializer = ProductSerializer(data=request.data, context={'request': request})
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     headers = self.get_success_headers(serializer.data)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.filter()
     serializer_class = ProductDetailSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
+    def get_queryset(self):
+        return Product.objects.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 
-# Nirali's link: https://stackoverflow.com/questions/54772183/django-rest-framework-permissions-and-ownership?fbclid=IwAR0JOcO5miec3hDQ8jFFIHplPPUMPRag7zJRrSqrTA3Xmj78UBXl6uVXJa4
+# Nirali's link (modelViewsets): https://stackoverflow.com/questions/54772183/django-rest-framework-permissions-and-ownership?fbclid=IwAR0JOcO5miec3hDQ8jFFIHplPPUMPRag7zJRrSqrTA3Xmj78UBXl6uVXJa4
 
 # Laura's link
 # https://stackoverflow.com/questions/34860988/django-rest-framework-restricting-user-access-for-objects 
 
 
-# def get_queryset(self): return Book.objects.filter(user=self.request.user) 
+# def get_queryset(self): return Book.objects.filter(owner=self.request.user) 
 
 # object permissions as opposed to model permissions? - Bridgitte
 
 # https://www.geeksforgeeks.org/customizing-object-level-permissions-django-rest-framework/
 # making a customised class? - brigitte
-
-
-# Error message: Field 'id' expected a number but got <rest_framework.request.Request: GET '/collection-detail/1/'>.
-# This comes up when a user tries to view their own collection detail view.
 
 
 
