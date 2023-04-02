@@ -6,6 +6,8 @@ from django.contrib.auth import get_user_model
 
 class Collection(models.Model):
     collection_name = models.CharField(max_length=250)
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='user_collection')
+
 
     def __str__(self):
         return self.collection_name
