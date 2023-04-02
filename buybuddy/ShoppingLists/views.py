@@ -31,13 +31,22 @@ class CollectionDetailView(APIView):
     queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
 
+    # def get_queryset(self):
+    #     owner = self.request.user
+    #     return self.queryset.prefetch_related(('owner'), queryset=Collection.objects.filter(owner))
+
     def get_object(self, request, pk):
         try:
             collection = Collection.objects.get(pk=pk)
             self.check_object_permissions(self.request, collection)
-            return collection.objects.filter(owner=self.request.user)
+            if collection.owner != self.request.user:
+                raise Http404
+            return collection
         except Collection.DoesNotExist:
             raise Http404
+            # return collection.objects.filter(owner=self.request.user)
+        # except Collection.DoesNotExist:
+        #     raise Http404
 
     # def retrieve(self, request, *args, **kwargs):
     #     instance = self.get_object()
@@ -46,8 +55,9 @@ class CollectionDetailView(APIView):
     #         return Response(serializer.data, status=status.HTTP_200_OK)
     #     else:
     #         return Response({'Message': 'No collection found'}, status=status.HTTP_404_NOT_FOUND)
+    
     def get(self, request, pk):
-        single_collection = self.get_object(pk, request)
+        single_collection = self.get_object(request, pk)
         serializers = CollectionSerializer(single_collection)
         return Response(serializers.data)
     
@@ -111,14 +121,12 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 # object permissions as opposed to model permissions? - Bridgitte
 
 # https://www.geeksforgeeks.org/customizing-object-level-permissions-django-rest-framework/
-# making a customised class?
+# making a customised class? - brigitte
 
 
 # Error message: Field 'id' expected a number but got <rest_framework.request.Request: GET '/collection-detail/1/'>.
 # This comes up when a user tries to view their own collection detail view.
 
-# Error message: 'Product' object has no attribute 'owner'
-# product needs an owner to post now?
 
 
 
