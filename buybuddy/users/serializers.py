@@ -3,14 +3,23 @@ from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser
 
 
-class CustomUserSerializer(serializers.Serializer):
-    id = serializers.ReadOnlyField()
-    username = serializers.CharField(max_length=150)
-    email = serializers.EmailField()
+class CustomUserSerializer(serializers.ModelSerializer):
+    # id = serializers.ReadOnlyField()
+    # username = serializers.CharField(max_length=150)
+    # email = serializers.EmailField()
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+        read_only_fields = ['id']
 
     def create(self, validated_data):
-        return CustomUser.objects.create(**validated_data)
-        user.set_password(validate_date['password'])
+        user = CustomUser.objects.create(
+            username = validated_data['username'],
+            email = validated_data['email'],
+        )
+        user.set_password(validated_data['password'])
         user.save()
         return user
     
@@ -28,8 +37,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('old_password', 'password', 'username', 'success')
-        read_only_fields = [
-            'username'
+        read_only_fields = ['id'
         ]
     def validate_old_password(self, value):
         instance = getattr(self, "instance", None)
