@@ -25,6 +25,7 @@ class CollectionSerializer(serializers.ModelSerializer):
     collection_name = serializers.CharField()
     product_collection = ProductSerializer(many=True, read_only=True)
 
+
     class Meta:
         model = Collection
         fields = "__all__"
