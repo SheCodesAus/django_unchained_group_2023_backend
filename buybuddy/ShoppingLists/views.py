@@ -117,7 +117,7 @@ class ProductListCreateView(generics.ListCreateAPIView):
 
 
 
-        
+
 
     # def list(self, request, *args, **kwargs):
     #     queryset = self.get_queryset()
@@ -135,7 +135,7 @@ class ProductListCreateView(generics.ListCreateAPIView):
     #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.filter()
+    queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
@@ -145,7 +145,8 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-
+    def perform_update(self, serializer):
+        serializer.save()
 
 # Nirali's link (modelViewsets): https://stackoverflow.com/questions/54772183/django-rest-framework-permissions-and-ownership?fbclid=IwAR0JOcO5miec3hDQ8jFFIHplPPUMPRag7zJRrSqrTA3Xmj78UBXl6uVXJa4
 
