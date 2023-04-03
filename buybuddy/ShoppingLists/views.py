@@ -9,6 +9,7 @@ from rest_framework import status, generics, filters, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Collection, Product
 from .serializers import CollectionSerializer, ProductSerializer, ProductDetailSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class CollectionListCreateView(generics.ListCreateAPIView):
@@ -137,6 +138,7 @@ class ProductListCreateView(generics.ListCreateAPIView):
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.filter()
     serializer_class = ProductDetailSerializer
+    parser_classes = (MultiPartParser, FormParser)
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_queryset(self):
