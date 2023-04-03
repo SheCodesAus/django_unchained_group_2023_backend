@@ -15,8 +15,8 @@ class Collection(models.Model):
 class Product(models.Model):
     product_brand = models.CharField(max_length=250)
     product_name = models.CharField(max_length=250)
-    image_url = models.URLField()
-    product_url = models.URLField()
+    image_url = models.URLField(max_length=1000)
+    product_url = models.URLField(max_length=1000)
     product_price = models.FloatField()
     additional_notes = models.CharField(max_length=1000)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name='product_collection')
