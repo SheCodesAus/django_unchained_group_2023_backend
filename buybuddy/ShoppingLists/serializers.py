@@ -21,6 +21,7 @@ class ProductDetailSerializer(ProductSerializer):
             instance.product_price = validated_data.get('product_price', instance.product_price)
             instance.additional_notes = validated_data.get('additional_notes', instance.additional_notes)
             instance.collection = validated_data.get('collection', instance.collection)
+            instance.favorite = validated_data.get('collection', instance.collection)
             return instance
   
 
