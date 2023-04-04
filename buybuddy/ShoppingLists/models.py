@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from users.models import CustomUser
 
 
 
@@ -21,6 +22,7 @@ class Product(models.Model):
     additional_notes = models.CharField(max_length=1000)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name='product_collection')
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='user_product')
+
 
     def __str__(self):
         return self.product_name
