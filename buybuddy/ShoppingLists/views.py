@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
-from rest_framework import status, generics, filters, permissions
+from rest_framework import status, generics, filters, permissions, validators
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Collection, Product
 from .serializers import CollectionSerializer, ProductSerializer, ProductDetailSerializer
@@ -141,13 +141,35 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
+    # if 'image_url' in self.request.query_params:
+    #         filter_backends = Product.image_url=False
+    # elif 'image_upload' in self.request.query_params:
+    #         filter_backends = Product.image_upload=False
+
     def get_queryset(self):
         return Product.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+    # def filter_queryset(self, queryset):
+    #     filter_backends = Product.objects.filter()
 
+    #     if 'image_url' in self.request.query_params:
+    #         filter_backends = Product.image_url=False
+    #     elif 'image_upload' in self.request.query_params:
+    #         filter_backends = Product.image_upload=False
+
+    #     for backend in list(filter_backends):
+    #         queryset = backend().filter_queryset(self.request, queryset, view=self)
+
+    #     return queryset
+
+    # def perform_create(self, serializer):
+    #     queryset = SignupRequest.objects.filter(user=self.request.user)
+    #     if queryset.exists():
+    #         raise ValidationError('You have already signed up')
+    #     serializer.save(user=self.request.user)
 
 # Nirali's link (modelViewsets): https://stackoverflow.com/questions/54772183/django-rest-framework-permissions-and-ownership?fbclid=IwAR0JOcO5miec3hDQ8jFFIHplPPUMPRag7zJRrSqrTA3Xmj78UBXl6uVXJa4
 

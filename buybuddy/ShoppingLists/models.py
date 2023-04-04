@@ -19,7 +19,7 @@ def upload_to(instance, filename):
 class Product(models.Model):
     product_brand = models.CharField(max_length=250)
     product_name = models.CharField(max_length=250)
-    image_url = models.URLField()
+    image_url = models.URLField(null=True)
     image_upload = models.ImageField(upload_to=upload_to, blank=True, null=True)
     product_url = models.URLField()
     product_price = models.FloatField()

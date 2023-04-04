@@ -9,11 +9,12 @@ class ProductSerializer(serializers.ModelSerializer):
         exclude = ['owner']
 
 class ProductDetailSerializer(ProductSerializer):
-    image_upload = serializers.ImageField(required=False)
+    image_upload = serializers.ImageField(required=True)
 
     class Meta:
         model = Product
         exclude = ['owner']
+        images = ['image_url', 'image_upload']
 
     def update(self, instance, validated_data):
         instance.product_brand = validated_data.get('product_brand', instance.product_brand)
@@ -26,7 +27,6 @@ class ProductDetailSerializer(ProductSerializer):
         instance.collection = validated_data.get('collection', instance.collection)
         return instance
   
-
 
 class CollectionSerializer(serializers.ModelSerializer):
     collection_name = serializers.CharField()
