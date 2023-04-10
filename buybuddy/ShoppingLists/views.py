@@ -110,6 +110,14 @@ class ProductListCreateView(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
+class FavouriteList(generics.ListAPIView):
+    serializer_class = ProductDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Product.objects.filter(collection__owner=self.request.user).filter(favourite=True)
+    
+
 
 
 
@@ -173,4 +181,5 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 #     "additional_notes": "black",
 #     "collection": 2
 # }
+
 

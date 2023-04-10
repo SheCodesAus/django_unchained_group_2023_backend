@@ -10,7 +10,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'password', 'my_favorites']
+        fields = ['id', 'username', 'email', 'password']
         extra_kwargs = {'password': {'write_only': True}}
         read_only_fields = ['id']
 
@@ -27,7 +27,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.username = validated_data.get('username', instance.username)
         instance.email = validated_data.get('email',instance.email)
         instance.set_password = validated_data.get('password')
-        instance.my_favorites = validated_data.get('my_favorites')
         instance.save()
         return instance
 
@@ -37,7 +36,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     success = serializers.BooleanField(read_only=True, default=True)
     class Meta:
         model = CustomUser
-        fields = ('old_password', 'password', 'username', 'success', 'my_favorites')
+        fields = ('old_password', 'password', 'username', 'success')
         read_only_fields = ['id']
 
     def validate_old_password(self, value):
