@@ -37,8 +37,8 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('old_password', 'password', 'username', 'success')
-        read_only_fields = ['id'
-        ]
+        read_only_fields = ['id']
+
     def validate_old_password(self, value):
         instance = getattr(self, "instance", None)
         # print(f"{instance=} {value=}")
@@ -52,3 +52,4 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         instance.set_password(validated_data['password'])
         instance.save()
         return instance
+
